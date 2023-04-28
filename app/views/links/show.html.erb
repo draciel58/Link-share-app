@@ -1,0 +1,58 @@
+<p style="color: green"><%= notice %></p>
+
+<div class="container mx-auto">
+  <div class="w-full md:w-3/4 lg:w-1/2 mx-auto my-8 rounded-lg shadow-lg">
+    <img src="https://www.ga.com/images/BlogFeaturedImages/intersatellite-link-1024.jpg" class="w-full h-64 object-cover rounded-t-lg">
+    <div class="p-4">
+      <h2 class="text-lg font-medium mb-2"><%= @link.title %></h2>
+      <p class="text-gray-600"><%= @link.url %></p>
+      <div class="mt-4 flex justify-between items-center">
+      </div>
+      <% @link.comments.each do |comment| %>
+      <div class="mt-4">
+        <div class="flex items-center">
+          <img src="https://www.pngitem.com/pimgs/m/71-714713_comment-logo-png-comment-icon-transparent-png.png" class="rounded-full w-8 h-8 object-cover mr-2">
+          <span class="text-gray-700 font-medium"><%= comment.user.email %></span>
+        </div>
+        <p class="text-gray-600 mt-1"><%= comment.body %></p>
+        <span class="text-gray-500"><%= comment.likes.all.size %> likes</span>
+        <% if current_user %>
+    <% if comment.likes.exists?(user_id: current_user.id) %>
+      <%= button_to "Unlike", comment_like_path(comment), method: :delete, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+    <% else %>
+      <%= button_to "Like", comment_likes_path(comment), method: :post, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+    <% end %>
+    <br>
+    <% if current_user.email == comment.user.email %>
+    <%= button_to "Destroy this comment", comment , method: :delete, class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
+      <% end %>
+      <% end %>
+      </div>
+      <% end %>
+
+<% if current_user %>
+
+<%= form_with(model: [ @link, @link.comments.build ], local: true) do |form| %>
+  <p>
+    <br>
+    <%= form.text_area :body, class: "bg-white w-full px-4 py-2 text-lg border-gray-400 focus:outline-none"%>
+  </p>
+  <p>
+    <%= form.submit "Add Comment", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+  </p>
+
+<% end %>
+
+<% end %>
+
+<br>
+<div>
+  <% if @link.user == current_user %>
+	  <%= link_to "Edit this link", edit_link_path(@link), class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %> 
+    <br><br>
+	  <%= button_to "Destroy this link", @link, method: :delete, class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
+  <% end %>
+  <br>
+  <%= link_to "Back to links", links_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+
+</div>
